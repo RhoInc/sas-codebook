@@ -4,6 +4,6 @@ This repo contains SAS<sup>&reg;</sup> code for producing a PDF summary of each 
 
 Continuous variables are summarized graphically using a combination histogram/boxplot. Continuous variables are also summarized tabularly using the mean, standard deviation, min, max, median, and quartiles.
 ![continuous strip](https://github.com/RhoInc/sas-codebook/blob/master/Continuous.PNG)
-Categorical variables are summarized graphically using horizontal bar charts (or dot plots). Categorical variables are also summarized tabularly using counts and precents. 
+Categorical variables are summarized graphically using horizontal bar charts (or dot plots). Categorical variables are also summarized tabularly using counts and percents. 
 ![categorical strip](https://github.com/RhoInc/sas-codebook/blob/master/Categorical.PNG)
 
