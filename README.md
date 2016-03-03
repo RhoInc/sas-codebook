@@ -8,10 +8,10 @@ Below the metadata are the number of non-missing values, the number of missing v
 
 Continuous variables are summarized graphically using a combination histogram/boxplot. Continuous variables are also summarized tabularly using the mean, standard deviation, min, max, median, and quartiles.
 
-![sas-codebook continuous example](https://github.com/RhoInc/sas-codebook/blob/master/Continuous.PNG)
+![sas-codebook continuous example](https://github.com/RhoInc/sas-codebook/blob/master/ImageFiles/Continuous.PNG)
 
 Categorical variables are summarized graphically using horizontal bar charts (or dot plots). Categorical variables are also summarized tabularly using counts and percents. 
 
-![sas-codebook categorical example](https://github.com/RhoInc/sas-codebook/blob/master/Categorical.PNG)
+![sas-codebook categorical example](https://github.com/RhoInc/sas-codebook/blob/master/ImageFiles/Categorical.PNG)
 
 For more details about the SAS code see the [Wiki](https://github.com/RhoInc/sas-codebook/wiki).
