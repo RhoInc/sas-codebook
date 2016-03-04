@@ -259,8 +259,8 @@ Example calls:
       %letput(goodby&i);
 
       proc sql noprint;
-         select   type
-         into     :goodbytype&i
+         select   type, format
+         into     :goodbytype&i, :goodbyfmt&i
          from     dictionary.columns
          where    libname = 'WORK'
                   and memname = 'CBV_GOODBY'
@@ -269,6 +269,7 @@ Example calls:
       quit;
       
       %letput(goodbytype&i);
+      %letput(goodbyfmt&i);
       
    %end;
    
@@ -484,9 +485,23 @@ Example calls:
          
          data _null_;
             length span $2000;
-            span = trim(upcase("&goodby1")) || ' = ' || trim("&goodbyval1");
+            span = trim(upcase("&goodby1")) || ': ' || trim("&goodbyval1");
+            %if &goodbyfmt1 ne %str() %then %do;
+               %if &goodbytype1 = num %then
+                  span = trim(span) || ' = ' || put(&goodbyval1,&goodbyfmt1);
+               %else
+                  span = trim(span) || ' = ' || put("&goodbyval1",&goodbyfmt1);
+               ;
+            %end;
             %if &goodby_n > 1 %then %do g = 2 %to &goodby_n;
-               span = trim(span) || ', ' || trim(upcase("&&goodby&g")) || ' = ' || trim("&&goodbyval&g");
+               span = trim(span) || ';  ' || trim(upcase("&&goodby&g")) || ': ' || trim("&&goodbyval&g");
+               %if &&goodbyfmt&g ne %str() %then %do;
+                  %if &&goodbytype&g = num %then 
+                     span = trim(span) || ' = ' || put(&&goodbyval&g,&&goodbyfmt&g);
+                  %else
+                     span = trim(span) || ' = ' || put("&&goodbyval&g",&&goodbyfmt&g);
+                  ;
+               %end;;
             %end;
             call symputx("span&d",span);
          run;
