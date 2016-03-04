@@ -90,7 +90,7 @@
       
       %letput(isfactor&i);
       
-      %*---------- is the formatted numeric variable all integer ----------;
+      %*---------- is the unformatted numeric variable all integer ----------;
       
       %global isinteger&i;
       %let isinteger&i = 0;

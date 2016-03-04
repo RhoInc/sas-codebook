@@ -83,6 +83,7 @@
          delete 
             cb_: 
             _doctmp:
+            _w_:
             ;
       run; quit;
    
