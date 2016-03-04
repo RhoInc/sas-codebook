@@ -330,7 +330,26 @@ Example calls:
    %end;
 
    
+
+   %*--------------------------------------------------------------------------------;
+   %*---------- check the ODS PDF 999 limit ----------;
+   %*--------------------------------------------------------------------------------;
    
+   %let images = %sysevalf(&data_n * &goodvar_n);
+   
+   %if &images > 999 %then %do;
+   
+      %put %str(W)ARNING: The current dataset has &data_n unique BY= combinations. With &goodvar_n ;
+      %put %str(W)ARNING: variables specified in VAR=, this yields &images total images, which ;
+      %put %str(W)ARNING: exceeds the ODS PDF limit of 999 images (see SAS note 18258).;
+      %put %str(W)ARNING: Split your dataset and try again.;
+      %put %str(W)ARNING: macro terminating.;
+      %goto badending;
+      
+   %end;
+   
+   
+      
    %*--------------------------------------------------------------------------------;
    %*---------- pdfpath fallback ----------;
    %*--------------------------------------------------------------------------------;
