@@ -2,10 +2,9 @@
 *---------- tell SAS where macros live ----------;
 *--------------------------------------------------------------------------------;
 
-%let macpath1 = H:\GitHub\sas-codebook;
-%let macpath2 = H:\GitHub\sas-codebook\HelperMacros;
+%let macpath = H:\GitHub\sas-codebook;
 
-options sasautos=("&macpath1" "&macpath2" sasautos);
+options sasautos=("&macpath" "&macpath\HelperMacros" sasautos);
 
 
 
