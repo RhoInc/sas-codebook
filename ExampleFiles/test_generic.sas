@@ -1,17 +1,9 @@
-*--------------------------------------------------------------------------------;
-*---------- tell SAS where the macros live ----------;
-*--------------------------------------------------------------------------------;
+*---------- tell SAS where you put everything ----------;
 
-%let macpath = H:\GitHub\sas-codebook;
+%let zippath = H:\GitHub\sas-codebook;
+options sasautos=("&zippath\Macros" sasautos);
+libname examples "&zippath\ExampleFiles";
 
-options sasautos=("&macpath\Macros" sasautos);
-
-
-
-*--------------------------------------------------------------------------------;
-*---------- call the macro ----------;
-*--------------------------------------------------------------------------------;
-
-libname examples "H:\GitHub\sas-codebook\ExampleFiles";
+*---------- run the macro on the local copy of the CARS dataset ----------;
 
 %codebook_generic(data=examples.cars)
