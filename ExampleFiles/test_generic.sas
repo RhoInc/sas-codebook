@@ -4,7 +4,7 @@
 
 %let macpath = H:\GitHub\sas-codebook;
 
-options sasautos=("&macpath" "&macpath\HelperMacros" sasautos);
+options sasautos=("&macpath\Macros" sasautos);
 
 
 
