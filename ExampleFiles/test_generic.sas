@@ -1,5 +1,5 @@
 *--------------------------------------------------------------------------------;
-*---------- tell SAS where macros live ----------;
+*---------- tell SAS where the macros live ----------;
 *--------------------------------------------------------------------------------;
 
 %let macpath = H:\GitHub\sas-codebook;
@@ -12,9 +12,6 @@ options sasautos=("&macpath\Macros" sasautos);
 *---------- call the macro ----------;
 *--------------------------------------------------------------------------------;
 
-%let pdfpath = H:\GraphicsGroup\Repository\dev\projects\165\gists;
+libname examples "H:\GitHub\sas-codebook\ExampleFiles";
 
-%codebook_generic
-   (data=sashelp.cars
-   ,pdfpath=&pdfpath
-   );
+%codebook_generic(data=examples.cars)
