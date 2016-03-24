@@ -39,7 +39,7 @@ Optional parameters:
                DEFAULT: 0.5
    catplot=    type of categorical plot: dot or hbar
                DEFAULT: dot
-   appendix=   include appendix of formats: yes or no
+   appendix=   include appendix of all formatted values: yes or no
                DEFAULT: no
    debug=      set to 1 if you want to keep the work datasets
                DEFAULT: 0
