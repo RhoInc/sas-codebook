@@ -172,10 +172,10 @@
          
          proc sql;
             create   table cb_owf1_&i as
-            select   &&name&i, cb_char_&&name&i, cb_fmt_sh_&&name&i, count(*) as frequency
+            select   &&name&i, cb_char_&&short&i, cb_fmt_sh_&&short&i, count(*) as frequency
             from     cb_fmt_&&memname&d
             where    &&name&i is not missing
-            group by &&name&i, cb_char_&&name&i, cb_fmt_sh_&&name&i
+            group by &&name&i, cb_char_&&short&i, cb_fmt_sh_&&short&i
             ;
          quit;
          
@@ -187,7 +187,7 @@
                   &&name&i
                   ;
                %else 
-                  cb_fmt_sh_&&name&i
+                  cb_fmt_sh_&&short&i
                   ;
                ;
          run;
@@ -200,17 +200,17 @@
             percent = 100*frequency/&&n&i;
             result = 
                %if &&isfmtreal&i eq 1 %then %do;
-                  trim(left(cb_char_&&name&i)) 
+                  trim(left(cb_char_&&short&i)) 
                   || ' = ' || 
                %end;
-               trim(left(cb_fmt_sh_&&name&i))
+               trim(left(cb_fmt_sh_&&short&i))
                || ' (' 
                || compress(put(frequency,best.)) 
                || ', '
                || compress(put(percent,5.1)) 
                || '%)'
                ;
-            keep cb_fmt_sh_&&name&i result frequency percent;
+            keep cb_fmt_sh_&&short&i result frequency percent;
          run;
 
          %*---------- combine into one long text string ----------;
@@ -246,10 +246,10 @@
          
          proc sql;
             create   table cb_owf1_&i as
-            select   &&name&i, cb_char_&&name&i, cb_fmt_sh_&&name&i, count(*) as frequency
+            select   &&name&i, cb_char_&&short&i, cb_fmt_sh_&&short&i, count(*) as frequency
             from     cb_fmt_&&memname&d
             where    &&name&i is not missing
-            group by &&name&i, cb_char_&&name&i, cb_fmt_sh_&&name&i
+            group by &&name&i, cb_char_&&short&i, cb_fmt_sh_&&short&i
             ;
          quit;
             
@@ -280,8 +280,8 @@
          
          %if &&toounique&i eq 1 or &&toolow&i eq 1 %then %do;
          
-            proc sort data=cb_fmt_&&memname&d (keep=cb_fmt_sh_&&name&i) out=cb_lohi1_&i;
-               by cb_fmt_sh_&&name&i;
+            proc sort data=cb_fmt_&&memname&d (keep=cb_fmt_sh_&&short&i) out=cb_lohi1_&i;
+               by cb_fmt_sh_&&short&i;
             run;
             
             data cb_lohi2_&i;
@@ -296,10 +296,10 @@
                where lo;
                length lowest $2000;
                retain lowest;
-               if _N_ = 1 then lowest = cb_fmt_sh_&&name&i;
+               if _N_ = 1 then lowest = cb_fmt_sh_&&short&i;
                else lowest = trim(lowest)
                   || ",&tab"
-                  || cb_fmt_sh_&&name&i
+                  || cb_fmt_sh_&&short&i
                   ;
                if eof then call symputx("lowest&i",lowest);
             run;
@@ -307,7 +307,7 @@
             %letput(lowest&i);
    
             proc sort data=cb_lohi1_&i out=cb_lohi3_&i;
-               by descending cb_fmt_sh_&&name&i;
+               by descending cb_fmt_sh_&&short&i;
             run;
             
             data cb_lohi4_&i;
@@ -322,10 +322,10 @@
                where hi;
                length highest $2000;
                retain highest;
-               if _N_ = 1 then highest = cb_fmt_sh_&&name&i;
+               if _N_ = 1 then highest = cb_fmt_sh_&&short&i;
                else highest = trim(highest)
                   || ",&tab"
-                  || cb_fmt_sh_&&name&i
+                  || cb_fmt_sh_&&short&i
                   ;
                if eof then call symputx("highest&i",highest);
             run;
@@ -351,7 +351,7 @@
             run;
    
             proc sort data=cb_owf3_&i out=cb_owf4_&i;
-               by descending frequency cb_fmt_sh_&&name&i;
+               by descending frequency cb_fmt_sh_&&short&i;
             run;
    
             data cb_owf5_&i;
@@ -368,10 +368,10 @@
                retain most;
                result = 
                   %if &&isfmtreal&i eq 1 %then %do;
-                     trim(left(cb_char_&&name&i)) 
+                     trim(left(cb_char_&&short&i)) 
                      || ' = ' || 
                   %end;
-                  trim(left(cb_fmt_sh_&&name&i))
+                  trim(left(cb_fmt_sh_&&short&i))
                   || ' (' 
                   || compress(put(frequency,best.)) 
                   || ', '
@@ -394,7 +394,7 @@
                set cb_owf5_&i;
                where mo;
                proportion = percent / 100;
-               keep cb_fmt_sh_&&name&i result frequency proportion;
+               keep cb_fmt_sh_&&short&i result frequency proportion;
             run;
             
          %end;

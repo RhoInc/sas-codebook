@@ -552,7 +552,6 @@ Example calls:
 
    %if &debug ne 1 %then %do;   
 
-      ods exclude directory members;
       proc datasets library=work;
          delete 
             cbv_: 

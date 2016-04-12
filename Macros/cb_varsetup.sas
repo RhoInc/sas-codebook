@@ -21,7 +21,7 @@
    %letput(varlist_n);
    
    %do i = 1 %to &varlist_n;
-      %global name&i type&i label&i format&i;
+      %global name&i type&i label&i format&i short&i;
    %end;
 
    data cb_temp;
@@ -42,6 +42,62 @@
    %end;
 
 
+
+   %*--------------------------------------------------------------------------------;
+   %*---------- create shorter version of each variable name ----------;
+   %*--------------------------------------------------------------------------------;
+   
+   %*---------- create short version of variable name ----------;
+   
+   data cb_sn0;
+      set cb_temp;
+      length short $32;
+      if length(name) > 20 then
+         short = substr(name,1,20);
+      else 
+         short = name;
+      keep name i short;
+   run;
+   
+   %*---------- count number of dups within each short version ----------;
+   
+   proc sql noprint;
+      create   table cb_sn1 as
+      select   short, count(distinct name) as dups
+      from     cb_sn0
+      group by short
+      ;
+      create   table cb_sn2 as
+      select   distinct name, i, short
+      from     cb_sn0
+      ;
+      create   table cb_sn3 as
+      select   a.*, b.dups
+      from     cb_sn2 as a
+               left join cb_sn1 as b
+               on a.short = b.short
+      order by name
+      ;
+   quit;
+   
+   %*---------- put suffixes on the short names if dups ----------;
+   
+   data cb_sn4;
+      set cb_sn3;
+      by short;
+      retain count;
+      width = floor(log10(dups));
+      if first.short then count = 0;
+      if dups > 1 then do;
+         count + 1;
+         count_c = put(count,best.);
+         short = cats(short,'_',count_c);
+      end;
+      mshort = 'short' || i;
+      call symputx(mshort,short);
+   run;
+   
+   
 
    %*--------------------------------------------------------------------------------;
    %*---------- distinguish some features of each variable ----------;
@@ -202,20 +258,20 @@
       %do i = 1 %to &varlist_n;
       
          %if (&&anly&i in (freqsome freqall)) and %nrbquote(&&format&i) ne %str() %then %do;
-            cb_fmt_&&name&i = put(&&name&i,&&format&i);
+            cb_fmt_&&short&i = put(&&name&i,&&format&i);
          %end;
          %else %if &&type&i = char %then %do;
-            cb_fmt_&&name&i = &&name&i;
+            cb_fmt_&&short&i = &&name&i;
          %end;
          %else %do;
-            cb_fmt_&&name&i = put(&&name&i,best.);
+            cb_fmt_&&short&i = put(&&name&i,best.);
          %end;
          
          %if &&type&i = num %then %do;
-            cb_char_&&name&i = left(put(&&name&i,best.));
+            cb_char_&&short&i = left(put(&&name&i,best.));
          %end;
          %else %do;
-            cb_char_&&name&i = &&name&i;
+            cb_char_&&short&i = &&name&i;
          %end;
          
       %end;      
@@ -233,23 +289,23 @@
       %*---------- create short version of cb_fmt ----------;
       
       data cb_short0_&i;
-         set cb_fmt_&&memname&d (keep=cb_fmt_&&name&i);
-         where cb_fmt_&&name&i is not missing;
+         set cb_fmt_&&memname&d (keep=cb_fmt_&&short&i);
+         where cb_fmt_&&short&i is not missing;
          length short $200;
-         if length(cb_fmt_&&name&i) > &dotlength then short = substr(cb_fmt_&&name&i,1,&dotlength);
-         else short = cb_fmt_&&name&i;
+         if length(cb_fmt_&&short&i) > &dotlength then short = substr(cb_fmt_&&short&i,1,&dotlength);
+         else short = cb_fmt_&&short&i;
       run;
       
       %*---------- count number of dups within each short version ----------;
       
       proc sql noprint;
          create   table cb_short1_&i as
-         select   short, count(distinct cb_fmt_&&name&i) as dups
+         select   short, count(distinct cb_fmt_&&short&i) as dups
          from     cb_short0_&i
          group by short
          ;
          create   table cb_short2_&i as
-         select   distinct cb_fmt_&&name&i, short
+         select   distinct cb_fmt_&&short&i, short
          from     cb_short0_&i
          ;
          create   table cb_short3_&i as
@@ -269,7 +325,7 @@
          width = floor(log10(dups));
          if first.short then count = 0;
          if dups = 1 then do;
-            if length(cb_fmt_&&name&i) > length(short) then short = cats(short,'...');
+            if length(cb_fmt_&&short&i) > length(short) then short = cats(short,'...');
          end;
          else do;
             count + 1;
@@ -278,9 +334,9 @@
          end;
          fmtname = "$f&i.sh";
          hlo = '';
-         keep fmtname cb_fmt_&&name&i short hlo;
+         keep fmtname cb_fmt_&&short&i short hlo;
          rename 
-            cb_fmt_&&name&i = start
+            cb_fmt_&&short&i = start
             short = label
             ;
       run;
@@ -293,10 +349,10 @@
       data cb_fmt_&&memname&d;
          set cb_fmt_&&memname&d;
          %if &&distinct&i > 0 %then %do;
-            cb_fmt_sh_&&name&i = put(cb_fmt_&&name&i,$f&i.sh.); 
+            cb_fmt_sh_&&short&i = put(cb_fmt_&&short&i,$f&i.sh.); 
          %end;
          %else %do;
-            cb_fmt_sh_&&name&i = cb_fmt_&&name&i;
+            cb_fmt_sh_&&short&i = cb_fmt_&&short&i;
          %end;
       run;
       
@@ -309,7 +365,7 @@
       
          proc sql;
             create   table cb_ifr0_&i as
-            select   distinct cb_char_&&name&i, cb_fmt_&&name&i
+            select   distinct cb_char_&&short&i, cb_fmt_&&short&i
             from     cb_fmt_&&memname&d
             where    &&name&i is not missing
             ;
@@ -318,7 +374,7 @@
          data _null_;
             set cb_ifr0_&i end=eof;
             retain isfmtreal 0;
-            if left(cb_char_&&name&i) ne left(cb_fmt_&&name&i) then isfmtreal = 1;
+            if left(cb_char_&&short&i) ne left(cb_fmt_&&short&i) then isfmtreal = 1;
             if eof then call symputx("isfmtreal&i",isfmtreal);
          run;
       
