@@ -41,6 +41,9 @@ Optional parameters:
                DEFAULT: dot
    appendix=   include appendix of all formatted values: yes or no
                DEFAULT: no
+   maxappx=    maximum number of unique values a variable can have and still 
+               be allowed to show up in the appendix 
+               DEFAULT: 20
    debug=      set to 1 if you want to keep the work datasets
                DEFAULT: 0
    
@@ -116,6 +119,8 @@ Example calls:
       ,uniquepct=90
       ,lowestpct=0.5
       ,catplot=dot
+      ,appendix=no
+      ,maxappx=20
       ,debug=0
       );
 
@@ -139,6 +144,20 @@ Example calls:
       %else %put NOTE- Macro variable %upcase(&mvar) does not exist.;
    %mend letput;
 
+   %macro titlefootnote;
+      title1 
+         j=l "~S={cellwidth=6.5in}Abbr. codebook for %upcase(&&data&d) (&varlist_n vars, &&nobs&d obs)" 
+         j=r 'Page ~{thispage} of ~{lastpage}'
+         ;
+      footnote1
+         j=l "Shortened text strings are denoted by three dots (...)."
+         ;
+      footnote2
+         j=l "~S={cellwidth=6.5in}&pdfpath" 
+         j=r "&dtm"
+         ;
+   %mend titlefootnote;
+   
 
 
    %*--------------------------------------------------------------------------------;
