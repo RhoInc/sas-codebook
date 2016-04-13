@@ -93,6 +93,12 @@
    
    proc sort data=_w_&&memname&d;
       by &panelby;
+      %*---------- drop records where &panelby is missing ----------;
+      %if &panelbytype eq char %then
+         where &panelby ne "" ;
+      %else %if &panelbytype eq num %then
+         where n(&panelby) ;
+      ;
    run;
       
    %global panels&d;

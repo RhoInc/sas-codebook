@@ -85,9 +85,9 @@
          %else %do;
 
             proc sgplot data=cb_fmt_&&memname&d
-                  (where=(compress(cb_fmt_sh_&&name&i) not in (' ' '.' '...')))
+                  (where=(compress(cb_fmt_sh_&&short&i) not in (' ' '.' '...')))
                   ;
-               &catplot cb_fmt_sh_&&name&i /
+               &catplot cb_fmt_sh_&&short&i /
                   stat=percent
                   categoryorder=respdesc 
                   %if %upcase(&catplot) = DOT %then %do;
@@ -139,7 +139,7 @@
             run;
             
             proc sgplot data=cb_most&i;
-               &catplot cb_fmt_sh_&&name&i / 
+               &catplot cb_fmt_sh_&&short&i / 
                   response=proportion 
                   categoryorder=respdesc  
                   %if %upcase(&catplot) = DOT %then %do;

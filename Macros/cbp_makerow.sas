@@ -108,8 +108,8 @@
                where &panelby eq &allnum
                ;
             ;
-            where also compress(cb_fmt_sh_&&name&i) not in (' ' '.' '...');
-            hbar cb_fmt_sh_&&name&i /
+            where also compress(cb_fmt_sh_&&short&i) not in (' ' '.' '...');
+            hbar cb_fmt_sh_&&short&i /
                stat=freq
                categoryorder=respdesc
                   fillattrs=(color=lightgray)
@@ -136,8 +136,8 @@
             proc sgplot data=cb_most&i;
                title1 "&&name&i, Top 5";
                footnote1;
-               where also compress(cb_fmt_sh_&&name&i) not in (' ' '.' '...');
-               hbar cb_fmt_sh_&&name&i / 
+               where also compress(cb_fmt_sh_&&short&i) not in (' ' '.' '...');
+               hbar cb_fmt_sh_&&short&i / 
                   response=frequency
                   categoryorder=respdesc  
                   fillattrs=(color=lightgray)
@@ -209,13 +209,13 @@
             proc sql;
                *--- counts within panel and category ---;
                create   table cb_respdesc00_&i as
-               select   &panelby, cb_fmt_sh_&&name&i, count(*) as cb_respdesc
+               select   &panelby, cb_fmt_sh_&&short&i, count(*) as cb_respdesc
                from     cb_fmt_&&memname&d
-               group by &panelby, cb_fmt_sh_&&name&i
+               group by &panelby, cb_fmt_sh_&&short&i
                ;
                *--- select overall counts ---;
                create   table cb_respdesc10_&i as
-               select   cb_fmt_sh_&&name&i, cb_respdesc
+               select   cb_fmt_sh_&&short&i, cb_respdesc
                from     cb_respdesc00_&i
                %if &panelbytype = char %then
                   where &panelby eq "&allchar"
@@ -223,11 +223,11 @@
                %else
                   where &panelby eq &allnum
                   ;
-               order by cb_respdesc desc, cb_fmt_sh_&&name&i
+               order by cb_respdesc desc, cb_fmt_sh_&&short&i
                ;
                *--- rank overall counts ---;
                create   table cb_respdesc15_&i as
-               select   cb_fmt_sh_&&name&i, cb_respdesc, monotonic() as cb_respdesc_order
+               select   cb_fmt_sh_&&short&i, cb_respdesc, monotonic() as cb_respdesc_order
                from     cb_respdesc10_&i
                ;
                *--- all panels levels ---;
@@ -237,10 +237,10 @@
                ;
                *--- all panel by category combinations ---;
                create   table cb_shell10_&i as
-               select   a.&panelby, b.cb_respdesc_order, cb_fmt_sh_&&name&i
+               select   a.&panelby, b.cb_respdesc_order, cb_fmt_sh_&&short&i
                from     cb_shell00_&i as a, cb_respdesc15_&i as b
                where    cb_respdesc_order <= &maxfreqs
-               order by &panelby, cb_respdesc_order, cb_fmt_sh_&&name&i
+               order by &panelby, cb_respdesc_order, cb_fmt_sh_&&short&i
                ;
                *--- merge counts onto shell ---;
                create   table cb_respdesc20_&i as
@@ -248,8 +248,8 @@
                from     cb_shell10_&i as a
                         left join cb_respdesc00_&i as b
                         on a.&panelby = b.&panelby
-                           and a.cb_fmt_sh_&&name&i = b.cb_fmt_sh_&&name&i
-               order by &panelby, cb_respdesc_order, cb_fmt_sh_&&name&i
+                           and a.cb_fmt_sh_&&short&i = b.cb_fmt_sh_&&short&i
+               order by &panelby, cb_respdesc_order, cb_fmt_sh_&&short&i
                ;
             quit;
             
@@ -268,8 +268,8 @@
                   where &panelby ne &allnum
                   ;
                ;
-               where also compress(cb_fmt_sh_&&name&i) not in (' ' '.' '...');
-               hbarparm category=cb_fmt_sh_&&name&i response=cb_respdesc_final /
+               where also compress(cb_fmt_sh_&&short&i) not in (' ' '.' '...');
+               hbarparm category=cb_fmt_sh_&&short&i response=cb_respdesc_final /
                   fillattrs=(color=lightgray)
                   ;
                rowaxis 
