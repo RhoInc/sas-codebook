@@ -32,19 +32,9 @@
    
    options nodate nonumber;
 
-   title1 
-      j=l "~S={cellwidth=6.5in}Abbr. codebook for %upcase(&&data&d) (&varlist_n vars, &&nobs&d obs)" 
-      j=r 'Page ~{thispage} of ~{lastpage}'
-      ;
-   footnote1
-      j=l "Shortened text strings are denoted by three dots (...)."
-      ;
-   footnote2
-      j=l "~S={cellwidth=6.5in}&pdfpath" 
-      j=r "&dtm"
-      ;
-
-
+   %titlefootnote;
+   
+   
 
    %*--------------------------------------------------------------------------------;
    %*---------- and now the ods begins ----------;
@@ -68,6 +58,12 @@
          %end;
 
       ods layout end;
+      
+      %if &appendix = yes %then %do;
+      
+         %cb_makeappx;
+      
+      %end;
 
    ods pdf close;
 

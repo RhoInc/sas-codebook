@@ -209,7 +209,7 @@
 
    %do i = 1 %to &varlist_n;
    
-      %global anly&i distinct&i;
+      %global anly&i distinct&i appx&i;
    
       proc sql noprint;
          select   count(distinct &&name&i)
@@ -219,21 +219,37 @@
       quit;
       
       %if &&distinct&i = 0 %then %do;
+      
          %let anly&i = freqnone;
+         %let appx&i = no;
+         
       %end;
+      
       %else %if &&type&i = char %then %do;
+      
          %if &&distinct&i > &maxfreqs %then %let anly&i = freqsome;
-         %else %let anly&i = freqall;         
+         %else %let anly&i = freqall;  
+         
+         %if &&distinct&i <= &maxappx %then %let appx&i = yes;
+         %else %let appx&i = no;       
+         
       %end;
+      
       %else %if &&type&i = num %then %do;
+      
          %if &&isfactor&i = 0 and &&distinct&i > &minfreqs %then %let anly&i = means;
          %else %if &&distinct&i > &maxfreqs %then %let anly&i = freqsome;
          %else %let anly&i = freqall;
+         
+         %if &&isfactor&i = 1 and &&distinct&i <= &maxappx %then %let appx&i = yes;
+         %else %let appx&i = no;       
+         
       %end;
 
       %letput(name&i);
       %letput(distinct&i);
       %letput(anly&i);
+      %letput(appx&i);
 
    %end;
    
@@ -242,6 +258,7 @@
       %letput(name&i);
       %letput(anly&i);
       %letput(distinct&i);
+      %letput(appx&i);
    
    %end;
 

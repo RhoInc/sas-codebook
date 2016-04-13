@@ -401,6 +401,55 @@
 
       %end;
 
+
+
+      %*--------------------------------------------------------------------------------;
+      %*---------- generate appendix resuults ----------;
+      %*--------------------------------------------------------------------------------;
+
+      %if &&appx&i = yes %then %do;
+
+         %*---------- initial results ----------;
+         
+         proc sql;
+            create   table cb_appx1_&i as
+            select   &&name&i, cb_char_&&short&i, cb_fmt_sh_&&short&i, count(*) as frequency
+            from     cb_fmt_&&memname&d
+            where    &&name&i is not missing
+            group by &&name&i, cb_char_&&short&i, cb_fmt_sh_&&short&i
+            ;
+         quit;
+         
+         %*---------- put results in appropriate order ----------;
+         
+         proc sort data=cb_appx1_&i;
+            by &&name&i;
+         run;
+         
+         %*---------- finalize dataset ----------;
+         
+         data cb_appx_&i;
+            set cb_appx1_&i;
+            length col1 $100 col2 col3 $200;
+            col1 = "&&name&i";
+            if "&&format&i" ne "" then col1 = trim(col1) || " {&&format&i}";
+            col2 = cb_char_&&short&i;
+            if "&&format&i" ne "" then col3 = cb_fmt_sh_&&short&i;
+            col4 = frequency;
+            col5 = 100*frequency/&&n&i;
+            format col5 5.1;
+            label
+               col1 = "Variable {Format}"
+               col2 = "Unformatted"
+               col3 = "Formatted"
+               col4 = "Count"
+               col5 = "Percent"
+               ;
+            keep col1-col5;
+         run;
+
+      %end;
+
    %end;
 
 
