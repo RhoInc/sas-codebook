@@ -30,6 +30,7 @@
       %letput(N&i);
       %letput(Missing&i);
       %letput(Unique&i);
+      %letput(panelby);
 
 
 
@@ -73,6 +74,13 @@
          ods output summary=cb_means&i;
          proc means data=_w_&&memname&d mean stddev min q1 median q3 max;
             var &&name&i;
+            %if %symexist(panelby) %then %do;
+               %if &panelbytype = char %then
+                  where &panelby ne "&allchar" ;
+               %else
+                  where &panelby ne &allnum ;
+               ;
+            %end;
          run;
 
          %*---------- determine precision via min/max ----------;
@@ -167,7 +175,7 @@
       %*--------------------------------------------------------------------------------;
 
       %else %if &&anly&i = freqall %then %do;
-
+      
          %*---------- initial results ----------;
          
          proc sql;
@@ -175,6 +183,12 @@
             select   &&name&i, cb_char_&&short&i, cb_fmt_sh_&&short&i, count(*) as frequency
             from     cb_fmt_&&memname&d
             where    &&name&i is not missing
+                     %if %symexist(panelby) %then %do;
+                        %if &panelbytype = char %then
+                           and &panelby ne "&allchar" ;
+                        %else
+                           and &panelby ne &allnum ;
+                     %end;
             group by &&name&i, cb_char_&&short&i, cb_fmt_sh_&&short&i
             ;
          quit;
@@ -249,6 +263,12 @@
             select   &&name&i, cb_char_&&short&i, cb_fmt_sh_&&short&i, count(*) as frequency
             from     cb_fmt_&&memname&d
             where    &&name&i is not missing
+                     %if %symexist(panelby) %then %do;
+                        %if &panelbytype = char %then
+                           and &panelby ne "&allchar" ;
+                        %else
+                           and &panelby ne &allnum ;
+                     %end;
             group by &&name&i, cb_char_&&short&i, cb_fmt_sh_&&short&i
             ;
          quit;
