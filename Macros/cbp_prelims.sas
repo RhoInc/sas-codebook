@@ -83,7 +83,15 @@
             format &panelby $&allcharlength..;
          %end;
       %end;
+      %*--- end sidebar ---;
       set &&data&d;
+      %*--- drop records where &panelby is missing ---;
+      %if &panelbytype eq char %then
+         where &panelby ne "" ;
+      %else %if &panelbytype eq num %then
+         where n(&panelby) ;
+      ;
+      %*--- end record dropping ---;
       output;
       %if &panelbytype = num %then &panelby = &allnum;
       %else &panelby = "&allchar";
@@ -93,12 +101,6 @@
    
    proc sort data=_w_&&memname&d;
       by &panelby;
-      %*---------- drop records where &panelby is missing ----------;
-      %if &panelbytype eq char %then
-         where &panelby ne "" ;
-      %else %if &panelbytype eq num %then
-         where n(&panelby) ;
-      ;
    run;
       
    %global panels&d;

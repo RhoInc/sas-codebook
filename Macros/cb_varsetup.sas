@@ -230,8 +230,10 @@
          %if &&distinct&i > &maxfreqs %then %let anly&i = freqsome;
          %else %let anly&i = freqall;  
          
-         %if &&distinct&i <= &maxappx %then %let appx&i = yes;
-         %else %let appx&i = no;       
+         %if %symexist(maxappx) %then %do;
+            %if &&distinct&i <= &maxappx %then %let appx&i = yes;
+            %else %let appx&i = no;       
+         %end;
          
       %end;
       
@@ -241,8 +243,10 @@
          %else %if &&distinct&i > &maxfreqs %then %let anly&i = freqsome;
          %else %let anly&i = freqall;
          
-         %if &&isfactor&i = 1 and &&distinct&i <= &maxappx %then %let appx&i = yes;
-         %else %let appx&i = no;       
+         %if %symexist(maxappx) %then %do;
+            %if &&isfactor&i = 1 and &&distinct&i <= &maxappx %then %let appx&i = yes;
+            %else %let appx&i = no;       
+         %end;
          
       %end;
 
