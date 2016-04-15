@@ -259,8 +259,9 @@ Example calls:
    
    proc sql noprint;
       create   table cbv_goodby as
-      select   distinct &goodbycomma
+      select   &goodbycomma, count(*) as obs
       from     &data
+      group by &goodbycomma
       ;
    quit;
    
@@ -447,6 +448,28 @@ Example calls:
    ods escapechar='~';
    ods pdf file="&pdfpath\&pdfname..pdf" style=mystyle bookmarkgen=no;
 
+
+
+      %*--------------------------------------------------------------------------------;
+      %*---------- summary of good by levels ----------;
+      %*--------------------------------------------------------------------------------;
+      
+      %tfoot
+      title2 "Summary of BY= value combinations found in this dataset";
+      
+      proc print data=cbv_goodby noobs;
+      run;
+      
+      title2;
+      
+      ods pdf startpage=now;
+   
+
+
+      %*--------------------------------------------------------------------------------;
+      %*---------- cycle over good by levels ----------;
+      %*--------------------------------------------------------------------------------;
+   
       %do d = 1 %to &data_n;
       
          %put -------------------------------------------------------------------------------------;
