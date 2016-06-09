@@ -259,8 +259,9 @@ Example calls:
    
    proc sql noprint;
       create   table cbv_goodby as
-      select   distinct &goodbycomma
+      select   &goodbycomma, count(*) as obs
       from     &data
+      group by &goodbycomma
       ;
    quit;
    
@@ -426,7 +427,8 @@ Example calls:
    
       title1 
          j=l "~S={cellwidth=6.5in}Abbr. vert. codebook for %upcase(&data) (&nobs obs)" 
-         j=r 'Page ~{thispage} of ~{lastpage}'
+         /*j=r 'Page ~{thispage} of ~{lastpage}'*/
+         j=r 'Page ~{thispage}'
          ;
       footnote1
          j=l "Shortened text strings are denoted by three dots (...)."
@@ -447,6 +449,28 @@ Example calls:
    ods escapechar='~';
    ods pdf file="&pdfpath\&pdfname..pdf" style=mystyle bookmarkgen=no;
 
+
+
+      %*--------------------------------------------------------------------------------;
+      %*---------- summary of good by levels ----------;
+      %*--------------------------------------------------------------------------------;
+      
+      %tfoot
+      title2 "Summary of BY= value combinations found in this dataset";
+      
+      proc print data=cbv_goodby noobs;
+      run;
+      
+      title2;
+      
+      ods pdf startpage=now;
+   
+
+
+      %*--------------------------------------------------------------------------------;
+      %*---------- cycle over good by levels ----------;
+      %*--------------------------------------------------------------------------------;
+   
       %do d = 1 %to &data_n;
       
          %put -------------------------------------------------------------------------------------;

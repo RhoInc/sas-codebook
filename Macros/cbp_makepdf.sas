@@ -35,7 +35,8 @@
    %macro tfoot;
       title1 
          j=l "~S={cellwidth=6.5in}Abbr. paneled codebook for %upcase(&&data&d) (&varlist_n vars, &&nobs&d obs)" 
-         j=r 'Page ~{thispage} of ~{lastpage}'
+         /*j=r 'Page ~{thispage} of ~{lastpage}'*/
+         j=r 'Page ~{thispage}'
          ;
       footnote1
          j=l "Shortened text strings are denoted by three dots (...)."
