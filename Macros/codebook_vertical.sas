@@ -427,7 +427,8 @@ Example calls:
    
       title1 
          j=l "~S={cellwidth=6.5in}Abbr. vert. codebook for %upcase(&data) (&nobs obs)" 
-         j=r 'Page ~{thispage} of ~{lastpage}'
+         /*j=r 'Page ~{thispage} of ~{lastpage}'*/
+         j=r 'Page ~{thispage}'
          ;
       footnote1
          j=l "Shortened text strings are denoted by three dots (...)."

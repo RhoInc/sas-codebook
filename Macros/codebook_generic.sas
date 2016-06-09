@@ -147,7 +147,8 @@ Example calls:
    %macro titlefootnote;
       title1 
          j=l "~S={cellwidth=6.5in}Abbr. codebook for %upcase(&&data&d) (&varlist_n vars, &&nobs&d obs)" 
-         j=r 'Page ~{thispage} of ~{lastpage}'
+         /*j=r 'Page ~{thispage} of ~{lastpage}'*/
+         j=r 'Page ~{thispage}'
          ;
       footnote1
          j=l "Shortened text strings are denoted by three dots (...)."
