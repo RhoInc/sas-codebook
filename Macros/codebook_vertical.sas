@@ -447,7 +447,7 @@ Example calls:
    %*--------------------------------------------------------------------------------;
    
    ods escapechar='~';
-   ods listing gpath="%sysfunc(pathname(work))";
+   ods listing close;
    ods pdf file="&pdfpath\&pdfname..pdf" style=mystyle bookmarkgen=no;
 
 
@@ -568,6 +568,7 @@ Example calls:
       %end;
 
    ods pdf close;
+   ods listing;
 
 
 
