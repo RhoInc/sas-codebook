@@ -56,6 +56,7 @@
    %*--------------------------------------------------------------------------------;
    
    ods escapechar='~';
+   ods listing gpath="%sysfunc(pathname(work))";
    ods pdf file="&pdfpath\&&pdfname&d...pdf" style=mystyle bookmarkgen=no startpage=never;
 
       ods layout gridded 
