@@ -138,7 +138,7 @@ Example calls:
    
    %macro letput(mvar);
       %if %symexist(&mvar) eq 1 %then %do;
-         %let &mvar = %nrbquote(&&&mvar);
+         %let &mvar = %nrbquote(%sysfunc(strip(&&&mvar)));
          %put NOTE- &mvar = [%nrbquote(&&&mvar)];
       %end;
       %else %put NOTE- Macro variable %upcase(&mvar) does not exist.;
