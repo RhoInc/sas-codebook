@@ -14,6 +14,7 @@
    %letput(data&d);
    %letput(libname&d);
    %letput(memname&d);
+   %let memname&d = %unquote(memname&d);
    
    proc sql noprint;
       select   nobs
