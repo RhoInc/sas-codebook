@@ -124,7 +124,10 @@ Example calls:
    
    %macro letput(mvar);
       %if %symexist(&mvar) eq 1 %then %do;
-         %let &mvar = %nrbquote(%sysfunc(strip(&&&mvar)));
+         %if %nrbquote(&&&mvar) ne %str() %then
+            %let &mvar = %nrbquote(%sysfunc(strip(&&&mvar)));
+         %else
+            %let &mvar = ;
          %put NOTE- &mvar = [%nrbquote(&&&mvar)];
       %end;
       %else %put NOTE- Macro variable %upcase(&mvar) does not exist.;
@@ -309,6 +312,7 @@ Example calls:
       
          %let var&i = %scan(&var,&i,%str( ));
          %letput(var&i);
+         %let var&i = %unquote(&&var&i);
          
          %if %varexist(data=&data,var=&&var&i) %then %let goodvar = &goodvar &&var&i;
          %else %put %str(N)OTE: VAR variable (&&var&i) is not present.;
@@ -344,6 +348,7 @@ Example calls:
    
       %let goodvar&i = %scan(&goodvar,&i,%str( ));
       %letput(goodvar&i);
+      %let goodvar&i = %unquote(&&goodvar&i);
    
    %end;
 
@@ -548,6 +553,7 @@ Example calls:
          run;
          
          %letput(span&d);
+         %let span&d = %unquote(&&span&d);
          
          %*---------- get variables set up for processing ----------;
          

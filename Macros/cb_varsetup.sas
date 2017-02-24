@@ -106,6 +106,7 @@
    %do i = 1 %to &varlist_n;
    
       %letput(name&i);
+      %let name&i = %unquote(&&name&i);
 
       %*---------- is the formatted numeric variable a factor variable ---------;
             
@@ -263,6 +264,11 @@
       %letput(anly&i);
       %letput(distinct&i);
       %letput(appx&i);
+      
+      %let name&i = %unquote(&&name&i);
+      %let anly&i = %unquote(&&anly&i);
+      %let distinct&i = %unquote(&&distinct&i);
+      %let appx&i = %unquote(&&appx&i);
    
    %end;
 

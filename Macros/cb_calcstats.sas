@@ -10,6 +10,7 @@
 
       %put -------------------------------------------------------------------------------------;
       %letput(name&i);
+      %let i = %unquote(&i);
       %put -------------------------------------------------------------------------------------;
 
 
@@ -85,6 +86,8 @@
 
          %*---------- determine precision via min/max ----------;
          
+         %let name&i = %unquote(&&name&i);
+         
          data _null_;
             set cb_means&i;
             _min = put(&&name&i.._min,best.);
@@ -123,10 +126,10 @@
 
          %*---------- apply formats ----------;
          
-         %letput(format&i);
          %if %nrbquote(&&format&i) ne %str() %then %let format = &&format&i;
          %else %let format = best.;
          %letput(format);
+         %let format = %unquote(&format);
          
          %macro cb_c(var);
             &var._c = put(&var,&format);

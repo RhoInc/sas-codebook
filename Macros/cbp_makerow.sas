@@ -3,7 +3,9 @@
 
    %put NOTE- ---------------------------------------------------------------;
    %letput(i);
+   %let i = %unquote(&i);
    %letput(name&i);
+   %let name&i = %unquote(&&name&i);
             
             
             
