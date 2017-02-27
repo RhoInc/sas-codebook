@@ -141,15 +141,15 @@ Example calls:
       options nonotes nomprint;
       %if %symexist(&mvar) eq 1 %then %do;
          data _null_;
-            _mvar = strip("&&&_mvar");
-            call symputx("&_mvar",_mvar);
+            mvar = strip("&&&mvar");
+            call symputx("&mvar",mvar);
          run;
          options notes;
          %put NOTE- &mvar = [%nrbquote(&&&mvar)];
       %end;
       %else %do;
          options notes;
-         %put NOTE- Macro variable %upcase(&_mvar) does not exist.;
+         %put NOTE- Macro variable %upcase(&mvar) does not exist.;
       %end;
       options &options;
    %mend letput;
