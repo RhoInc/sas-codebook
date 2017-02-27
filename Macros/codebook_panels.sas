@@ -129,8 +129,14 @@ Example calls:
    %*---------- trim and write macro variable values to the log ----------;
    
    %macro letput(mvar);
-      %let options = %sysfunc(getoption(notes)) %sysfunc(getoption(mprint));
-      options nonotes nomprint;
+      %let op_mprint = %sysfunc(getoption(mprint));
+      %if &op_mprint = MPRINT %then
+         options nomprint;
+         ;
+      %let op_notes = %sysfunc(getoption(notes));
+      %if &op_notes = NOTES %then 
+         options nonotes nomprint;
+         ;
       %if %symexist(&mvar) eq 1 %then %do;
          data _null_;
             mvar = strip("&&&mvar");
@@ -143,7 +149,7 @@ Example calls:
          options notes;
          %put NOTE- Macro variable %upcase(&mvar) does not exist.;
       %end;
-      options &options;
+      options &op_mprint &op_notes;
    %mend letput;
    
    %*---------- does variable exist in dataset ----------;
