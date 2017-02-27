@@ -137,14 +137,21 @@ Example calls:
    %*---------- trim and write macro variable values to the log ----------;
    
    %macro letput(mvar);
+      %let options = %sysfunc(getoption(notes)) %sysfunc(getoption(mprint));
+      options nonotes nomprint;
       %if %symexist(&mvar) eq 1 %then %do;
-         %if %nrbquote(&&&mvar) ne %str() %then
-            %let &mvar = %nrbquote(%sysfunc(strip(&&&mvar)));
-         %else
-            %let &mvar = ;
+         data _null_;
+            _mvar = strip("&&&_mvar");
+            call symputx("&_mvar",_mvar);
+         run;
+         options notes;
          %put NOTE- &mvar = [%nrbquote(&&&mvar)];
       %end;
-      %else %put NOTE- Macro variable %upcase(&mvar) does not exist.;
+      %else %do;
+         options notes;
+         %put NOTE- Macro variable %upcase(&_mvar) does not exist.;
+      %end;
+      options &options;
    %mend letput;
 
    %macro titlefootnote;
